@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileFilter;
+import java.io.*;
 
 public class Main {
 
@@ -34,17 +34,37 @@ public class Main {
 
 
         JFileChooser fc = new JFileChooser();
+
         ////////////////// filter
       //  FileFilter TextFiles = new FileNameExtensionFilter("Text file" , "txt");
       //  fc.setFileFilter(TextFiles);
 
         ////////////////////////////////////////////////////////////////////
+
+
+
+
         fc.setDialogTitle("Open a file");
         cfbtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fc.showDialog(null,null);
-                //File f = fc.getSelectedFile();
+
+               // FileReader infile  = new FileReader(fc.getSelectedFile());
+                try {
+                    FileReader infile= new FileReader(fc.getSelectedFile());
+                    String[] fileContainer = new String[100]; //just contain lines of input file
+                    String thisline = new String();// negah dashtan khat khandeh shode tavasot read.readLine()
+                    BufferedReader reader = reader = new BufferedReader(infile);
+                    for (int i = 0; (thisline = reader.readLine()) != null; i++) {
+                        fileContainer[i] = thisline;
+                     //   Txtbox.setText(thisline + "\n");
+
+                    }
+                } catch (IOException d){
+                    //System.err.println(d.getMessage());
+                  //  JOptionPane.showMessageDialog(f1 , "Error" , JOptionPane.WARNING_MESSAGE);
+                }
+               // int fileContainerLocation = 0;
             }
         });
         //////////////////////////////////////////////////////// add things
@@ -61,4 +81,7 @@ public class Main {
         f1.setVisible(true);
         //////////////////////////////////////////////////////
     }
+}
+class khazen {
+
 }
