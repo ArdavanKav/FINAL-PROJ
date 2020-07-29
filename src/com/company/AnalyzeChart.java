@@ -16,7 +16,6 @@ public class AnalyzeChart{
         f1.setSize(730, 410);
         f1.setLocation(400,10);
         f1.setVisible(true);
-
     }
     void openChartCurrent(ArrayList<Double> Current, double t){
 

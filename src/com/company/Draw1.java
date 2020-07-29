@@ -23,6 +23,7 @@ public class Draw1 extends Canvas {
         this.y0 = (int)((350*max - 10*min)/(max - min));
     }
 
+
     public void paint(Graphics g) {
         int y = y0;
         int yp = 0;

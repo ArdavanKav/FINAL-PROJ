@@ -11,5 +11,4 @@ public class Node {
     double V = 0;
     int union = 0;
     boolean added = false;
-
 }

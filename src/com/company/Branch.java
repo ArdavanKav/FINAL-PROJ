@@ -19,7 +19,6 @@ public class Branch {
     ArrayList<Double> Power = new ArrayList<>();
     double I0 = 0;
     double domain=0, freq=0, fi=0;
-
     int Vk = 0;
     int Vm = 0;
     String elementName = new String();

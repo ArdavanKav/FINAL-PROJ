@@ -13,7 +13,6 @@ public class Analyze {
     static double t = 0;
 
     public static void main(String name) {
-
         FileReader file;
         String[] fileContainer = new String[100];
         String thisline;
