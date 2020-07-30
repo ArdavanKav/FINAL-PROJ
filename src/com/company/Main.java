@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String[] keys = {"s1", "s2"};
+        String[] keys = {"V1", "R1", "R2"};
 
         runWindow.open(keys);
 

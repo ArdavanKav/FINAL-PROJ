@@ -20,7 +20,7 @@ public class Analyze {
         //----------------------------------------------------Por Kardane fileContainer:
         try {
             file = new FileReader("input.txt");
-            BufferedReader reader = reader = new BufferedReader(file);
+            BufferedReader reader = new BufferedReader(file);
             for (int i = 0; (thisline = reader.readLine()) != null; i++) {
                 fileContainer[i] = thisline;
             }
@@ -529,13 +529,9 @@ public class Analyze {
             time += dt;
         }
 
-
         Voltage = elements.get(name).Voltage;
         Current = elements.get(name).Current;
         Power = elements.get(name).Power;
-
-        for(double s: Voltage)
-            System.out.println(s);
 
         //-------------------------------------------------------------------------------------------------------OutPut:
         /*System.out.println("Nodes V:");

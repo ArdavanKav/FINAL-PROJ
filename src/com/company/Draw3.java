@@ -8,11 +8,14 @@ public class Draw3 extends Canvas {
     static ArrayList<Double> list = new ArrayList<>();
     static double max = 0;
     static double min = 0;
-    static double t = 0;
+    static double t1 = 0;
+    static double t2 = 0;
     static int y0 = 0;
-    Draw3(ArrayList<Double> list, double t){
+
+    Draw3(ArrayList<Double> list, double t1, double t2){
         this.list = list;
-        this.t = t;
+        this.t1 = t1;
+        this.t2 = t2;
         for(double s: list){
             if(s > max)
                 max = s;
@@ -22,10 +25,9 @@ public class Draw3 extends Canvas {
         this.y0 = (int)((350*max - 10*min)/(max - min));
     }
 
-
     public void paint(Graphics g) {
         int y = y0;
-        int yp = 0;
+        int yp;
         int x = 40;
         int xp = 40;
         g.setColor(Color.black);
@@ -34,17 +36,16 @@ public class Draw3 extends Canvas {
         g.drawLine(40, 7, 40, 353);
         g.drawLine(37,10,40,10);
         g.drawLine(37,350,40,350);
-        if(min >= 0 && max >= 0){
+        if(min > 0 && max > 0){
             y0 = 350;
             g.fillPolygon(new int[]{37, 40, 43}, new int[]{7, 1, 7}, 3);
         }
-        else if(min <= 0 && max<= 0){
+        else if(min <= 0 && max < 0){
             y0 = 10;
             g.fillPolygon(new int[]{37, 40, 44}, new int[]{353, 359, 353}, 3);
         }
-        else if(min <= 0 && max >= 0){
+        else if(min < 0 && max >= 0){
             g.fillPolygon(new int[]{37, 40, 43}, new int[]{7, 1, 7}, 3);
-            g.drawString("0.00", 5, y0);
         }
         g.drawLine(40, y0, 693, y0);
         g.fillPolygon(new int[]{693, 699, 693}, new int[]{y0-3, y0, y0+3}, 3);
@@ -52,20 +53,24 @@ public class Draw3 extends Canvas {
         g.drawLine(365, y0, 365, y0+3);
         g.drawLine(197, y0, 197, y0+3);
         g.drawLine(532, y0, 532, y0+3);
-        g.drawString(String.format("%.2f", t), 680, y0+15);
+        g.drawString(String.format("%.2f", t1), 45, y0+15);
+        g.drawString(String.format("%.2f", t2), 680, y0+15);
         g.drawString(String.format("%.2f", max), 5, 20);
         g.drawString(String.format("%.2f", min), 5, 350);
         g.setColor(Color.GREEN);
 
-        for(double s: list){
+        int i1 = (int) (t1* list.size()/Analyze.t)-1;
+        int i2 = (int) (t2* list.size()/Analyze.t)-1;
+        if(i1 < 0)
+            i1=0;
+        y = (int)((350*max - 10*min - 340*list.get(i1))/(max - min));
+        for(int i = i1; i<= i2; i++){
             yp = y;
-            y = (int)((350*max - 10*min - 340*s)/(max - min));
+            y = (int)((350*max - 10*min - 340*list.get(i))/(max - min));
             g.drawLine(xp, yp, x, y);
             xp = x;
-            x += (650/(list.size()-1));
+            x += (650/(i2 - i1));
         }
-
-
 
     }
 
