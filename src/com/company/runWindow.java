@@ -18,6 +18,7 @@ public class runWindow {
     static JLabel label3 = new JLabel("to");
     static JTextField startTime = new JTextField("0");
     static JTextField endTime = new JTextField("t");
+    static String selectedBranch = new String();
 
     static void open(String[] keys){
 
@@ -51,11 +52,10 @@ public class runWindow {
         main.setVisible(true);
         AnalyzeChart chart = new AnalyzeChart();
 
-
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                String selectedBranch = (String) comboBox.getItemAt(comboBox.getSelectedIndex());
+                selectedBranch = (String) comboBox.getItemAt(comboBox.getSelectedIndex());
                 Analyze.main(selectedBranch);
                 double t1 = Analyze.realValue(startTime.getText());
                 double t2;
@@ -65,7 +65,23 @@ public class runWindow {
                     t2 = Analyze.realValue(endTime.getText());
                 if(t2 > Analyze.t || t1 < 0 || t2 <= 0 || t1 >= t2){
                     JOptionPane showError = new JOptionPane(JOptionPane.ERROR_MESSAGE);
-                    JOptionPane.showMessageDialog(main, "Error :: invald analysis domain");
+                    JOptionPane.showMessageDialog(main, "Error :: invald analysis domain", "INPUT ERROR!", 0);
+                }
+                else if(Analyze.err2){
+                    JOptionPane.showMessageDialog(main, "Error # 2 #", "ANALYZE ERROR!", 0);
+                    main.setVisible(false);
+                }
+                else if(Analyze.err3){
+                    JOptionPane.showMessageDialog(main, "Error # 3 #", "ANALYZE ERROR!", 0);
+                    main.setVisible(false);
+                }
+                else if(Analyze.err4){
+                    JOptionPane.showMessageDialog(main, "Error # 4 #", "ANALYZE  ERROR!", 0);
+                    main.setVisible(false);
+                }
+                else if(Analyze.err5){
+                    JOptionPane.showMessageDialog(main, "Error # 5 #", "ANALYZE ERROR!", 0);
+                    main.setVisible(false);
                 }
                 else{
                     main.setVisible(false);

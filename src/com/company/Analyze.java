@@ -11,7 +11,10 @@ public class Analyze {
     static ArrayList<Double> Current = new ArrayList<>();
     static ArrayList<Double> Power = new ArrayList<>();
     static double t = 0;
-
+    static boolean err5 = false;
+    static boolean err4 = false;
+    static boolean err3 = false;
+    static boolean err2 = false;
     public static void main(String name) {
         FileReader file;
         String[] fileContainer = new String[100];
@@ -294,18 +297,10 @@ public class Analyze {
             if (node[i].doesExist)
                 nodeCounter++;
         //-----------------------------------------------------------------------------------------------------------Errors:
-        if (!error4(node, elements, elementsKey)) {
-            System.err.println("Error :: # -4 #");
-            return;
-        }
-        if (!error5(node, elements, elementsKey, nodeCounter)) {
-            System.err.println("Error :: # -5 #");
-            return;
-        }
-        if (!error2(node, elements, elementsKey, nodeCounter)) {
-            System.err.println("Error :: # -2 #");
-            return;
-        }
+        if (!error4(node, elements, elementsKey))
+            err4 = true;
+        if (!error5(node, elements, elementsKey, nodeCounter))
+            err5 = true;
         //--------------------------------------------------------------------------------------------------union class:
         class Union {
             Node mainNode = new Node();
@@ -514,21 +509,14 @@ public class Analyze {
                 elements.get(i).Power.add(elements.get(i).p);
             }
 
-            if (!error4(node, elements, elementsKey)) {
-                System.err.println("Error :: # -4 #");
-                return;
-            }
-            if (!error5(node, elements, elementsKey, nodeCounter)) {
-                System.err.println("Error :: # -5 #");
-                return;
-            }
-            if (error3[0]) {
-                System.err.println("Error :: # -3 #");
-                return;
-            }
+            if (!error4(node, elements, elementsKey))
+                err4 = true;
+            if (!error2(node, elements, elementsKey, nodeCounter))
+                err2 = true;
+            if (error3[0])
+                err3 = true;
             time += dt;
         }
-
         Voltage = elements.get(name).Voltage;
         Current = elements.get(name).Current;
         Power = elements.get(name).Power;
