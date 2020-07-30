@@ -11,11 +11,6 @@ public class AnalyzeChart{
 
     void openChartVoltage(ArrayList<Double> Voltage, double t1, double t2){
 
-        if(t2 > Analyze.t || t1 < 0 || t2 <= 0 || t1 >= t2){
-            System.err.println("Error :: invald analysis domain");
-            return;
-        }
-
         Draw1 draw1 = new Draw1(Voltage, t1, t2);
         f1.add(draw1);
         f1.setSize(730, 410);
@@ -23,9 +18,6 @@ public class AnalyzeChart{
         f1.setVisible(true);
     }
     void openChartCurrent(ArrayList<Double> Current, double t1, double t2){
-
-        if(t2 > Analyze.t || t1 < 0 || t2 <= 0 || t1 >= t2)
-            return;
 
         Draw2 draw2 = new Draw2(Current, t1, t2);
         f2.add(draw2);
@@ -36,9 +28,6 @@ public class AnalyzeChart{
 
     }
     void openChartPower(ArrayList<Double> Power, double t1, double t2){
-
-        if(t2 > Analyze.t || t1 < 0 || t2 <= 0 || t1 >= t2)
-            return;
 
         Draw3 draw3 = new Draw3(Power, t1, t2);
         f3.add(draw3);

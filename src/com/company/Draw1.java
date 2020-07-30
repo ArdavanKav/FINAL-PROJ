@@ -53,8 +53,8 @@ public class Draw1 extends Canvas {
         g.drawLine(365, y0, 365, y0+3);
         g.drawLine(197, y0, 197, y0+3);
         g.drawLine(532, y0, 532, y0+3);
-        g.drawString(String.format("%.2f", t1), 45, y0+15);
-        g.drawString(String.format("%.2f", t2), 680, y0+15);
+        g.drawString(String.format("%.2f", (int)(t1/(Analyze.t/list.size())) *(Analyze.t/list.size())), 45, y0+15);
+        g.drawString(String.format("%.2f", (int)(t2/(Analyze.t/list.size())) *(Analyze.t/list.size())), 680, y0+15);
         g.drawString(String.format("%.2f", max), 5, 20);
         g.drawString(String.format("%.2f", min), 5, 350);
         g.setColor(Color.GREEN);

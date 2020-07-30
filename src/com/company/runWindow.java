@@ -16,8 +16,8 @@ public class runWindow {
     static JPanel panel = new JPanel();
     static JLabel label2 = new JLabel("Select analysis period:");
     static JLabel label3 = new JLabel("to");
-    static JTextField startTime = new JTextField();
-    static JTextField endTime = new JTextField();
+    static JTextField startTime = new JTextField("0");
+    static JTextField endTime = new JTextField("t");
 
     static void open(String[] keys){
 
@@ -57,10 +57,22 @@ public class runWindow {
             public void actionPerformed(ActionEvent actionEvent) {
                 String selectedBranch = (String) comboBox.getItemAt(comboBox.getSelectedIndex());
                 Analyze.main(selectedBranch);
-                main.setVisible(false);
-                chart.openChartVoltage(Analyze.Voltage, Analyze.realValue(startTime.getText()), Analyze.realValue(endTime.getText()));
-                chart.openChartCurrent(Analyze.Current, Analyze.realValue(startTime.getText()), Analyze.realValue(endTime.getText()));
-                chart.openChartPower(Analyze.Power, Analyze.realValue(startTime.getText()), Analyze.realValue(endTime.getText()));
+                double t1 = Analyze.realValue(startTime.getText());
+                double t2;
+                if(endTime.getText().equals("t"))
+                    t2 = Analyze.t;
+                else
+                    t2 = Analyze.realValue(endTime.getText());
+                if(t2 > Analyze.t || t1 < 0 || t2 <= 0 || t1 >= t2){
+                    JOptionPane showError = new JOptionPane(JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(main, "Error :: invald analysis domain");
+                }
+                else{
+                    main.setVisible(false);
+                    chart.openChartVoltage(Analyze.Voltage, t1, t2);
+                    chart.openChartCurrent(Analyze.Current, t1, t2);
+                    chart.openChartPower(Analyze.Power, t1, t2);
+                }
             }
         });
     }
