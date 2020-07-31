@@ -1,6 +1,5 @@
 package com.company;
 
-import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,34 +9,22 @@ public class Analyze {
     static ArrayList<Double> Voltage = new ArrayList<>();
     static ArrayList<Double> Current = new ArrayList<>();
     static ArrayList<Double> Power = new ArrayList<>();
+    static ArrayList<String> elementsKey = new ArrayList<>();
+    static Node[] node = new Node[100];
+    static HashMap<String, Branch> elements = new HashMap<>();
     static double t = 0;
     static boolean err5 = false;
     static boolean err4 = false;
     static boolean err3 = false;
     static boolean err2 = false;
-    public static void main(String name) {
-        FileReader file;
-        String[] fileContainer = new String[100];
-        String thisline;
+    static boolean doesExist = false;
 
-        //----------------------------------------------------Por Kardane fileContainer:
-        try {
-            file = new FileReader("input.txt");
-            BufferedReader reader = new BufferedReader(file);
-            for (int i = 0; (thisline = reader.readLine()) != null; i++) {
-                fileContainer[i] = thisline;
-            }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
+
+    public static void main(String[] fileContainer) {
+        String name = runWindow.selectedBranch;
         int fileContainerLocation = 0;
-//----------------------------------------------------------------------------------------------------------------------
-
         String input;
         String[] sp;
-        Node[] node = new Node[100];
-        HashMap<String, Branch> elements = new HashMap<>();
-        ArrayList<String> elementsKey = new ArrayList<>();
         double dt = 0;
         double dv = 0;
         double di = 0;
@@ -292,6 +279,12 @@ public class Analyze {
                 System.err.println("invalid input :: line :" + (fileContainerLocation));
             }
         }
+
+        if(elementsKey.contains(name))
+            doesExist = true;
+        else if(!name.equals(""))
+            return;
+
         int nodeCounter = 0;
         for (int i = 1; i < 100; i++)
             if (node[i].doesExist)
@@ -517,47 +510,12 @@ public class Analyze {
                 err3 = true;
             time += dt;
         }
-        Voltage = elements.get(name).Voltage;
-        Current = elements.get(name).Current;
-        Power = elements.get(name).Power;
-
-        //-------------------------------------------------------------------------------------------------------OutPut:
-        /*System.out.println("Nodes V:");
-        for (int i = 1; i <= nodeCounter; i++) {
-            System.out.print("node " + i + " : ");
-            for (double s : node[i].Voltage)
-                System.out.printf("%.3f  ", s);
-            System.out.println();
+        if(!name.equals("")){
+            Voltage = elements.get(name).Voltage;
+            Current = elements.get(name).Current;
+            Power = elements.get(name).Power;
         }
 
-        System.out.println("\nBranches : (V, I, P)");
-        for (String s : elementsKey) {
-            System.out.print(s + " : ");
-            for (int i = 0; i < elements.get(s).Voltage.size(); i++)
-                System.out.printf("(%.3f, %.3f ,%.3f) ", elements.get(s).Voltage.get(i), elements.get(s).Current.get(i), elements.get(s).Power.get(i));
-            System.out.println("");
-        }
-
-        String put;
-        Scanner sc = new Scanner(System.in);
-        put = sc.nextLine();
-        int in = 0, out = 0;
-        double Time = 0;
-        while (!put.equals("END")) {
-            sp = put.split(" +");
-            try {
-                in = Integer.parseInt(sp[0]);
-                out = Integer.parseInt(sp[1]);
-                Time = realValue(sp[2]);
-                if (!node[in].doesExist || !node[out].doesExist || (Time / dt) % 1 != 0 || Time > t)
-                    System.err.println("ERROR");
-            } catch (Exception e) {
-                System.err.println("ERROR");
-            }
-            double vol = node[in].Voltage.get((int) (Time / dt)) - node[out].Voltage.get((int) (Time / dt));
-            System.out.println("V" + in + " - V" + out + " = " + vol);
-            put = sc.nextLine();
-        }*/
     }
     //=============================================================================================== value transfer method:
 

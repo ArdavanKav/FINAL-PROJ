@@ -16,6 +16,8 @@ public class Draw2 extends Canvas {
         this.list = list;
         this.t1 = t1;
         this.t2 = t2;
+        min = 0;
+        max = 0;
         for(double s: list){
             if(s > max)
                 max = s;

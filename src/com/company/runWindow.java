@@ -5,22 +5,23 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class runWindow {
 
-    static JFrame main = new JFrame("Simulation Setting");
-    static JLabel label1 = new JLabel("Select the branch:");
-    static JButton button = new JButton("Run");
-    static JComboBox comboBox = new JComboBox();
-    static Border border1 = BorderFactory.createLineBorder(Color.BLUE , 3 , true);
-    static JPanel panel = new JPanel();
-    static JLabel label2 = new JLabel("Select analysis period:");
-    static JLabel label3 = new JLabel("to");
-    static JTextField startTime = new JTextField("0");
-    static JTextField endTime = new JTextField("t");
-    static String selectedBranch = new String();
+    JFrame main = new JFrame("Simulation Setting");
+    JLabel label1 = new JLabel("Select the branch:");
+    JButton button = new JButton("Run");
+    JTextField nameField = new JTextField();
+    Border border1 = BorderFactory.createLineBorder(Color.BLUE , 3 , true);
+    JPanel panel = new JPanel();
+    JLabel label2 = new JLabel("Select analysis period:");
+    JLabel label3 = new JLabel("to");
+    JTextField startTime = new JTextField("0");
+    JTextField endTime = new JTextField("t");
+    static String selectedBranch = new String("");
 
-    static void open(String[] keys){
+   void open(String[] fileContainer){
 
         main.pack();
         main.setLocation(550,300);
@@ -33,8 +34,7 @@ public class runWindow {
         panel.setBackground(Color.white);
 
         label1.setBounds(40, 40, 130, 20);
-        comboBox = new JComboBox(keys);
-        comboBox.setBounds(160, 40, 60, 20);
+        nameField.setBounds(160, 40, 100, 20);
         label2.setBounds(40,90, 150, 20);
         label3.setBounds(260, 90, 50,20);
         startTime.setBounds(190, 90, 60, 20);
@@ -42,7 +42,7 @@ public class runWindow {
         button.setBounds(150, 150, 100, 30);
 
         panel.add(label1);
-        panel.add(comboBox);
+        panel.add(nameField);
         panel.add(button);
         panel.add(label2);
         panel.add(label3);
@@ -55,16 +55,25 @@ public class runWindow {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                selectedBranch = (String) comboBox.getItemAt(comboBox.getSelectedIndex());
-                Analyze.main(selectedBranch);
+                Analyze.Voltage.clear();
+                Analyze.Current.clear();
+                Analyze.Power.clear();
+                Analyze.elementsKey.clear();
+                Analyze.elements.clear();
+                selectedBranch = nameField.getText();
+
+                Analyze.main(fileContainer);
                 double t1 = Analyze.realValue(startTime.getText());
                 double t2;
                 if(endTime.getText().equals("t"))
                     t2 = Analyze.t;
                 else
                     t2 = Analyze.realValue(endTime.getText());
-                if(t2 > Analyze.t || t1 < 0 || t2 <= 0 || t1 >= t2){
-                    JOptionPane showError = new JOptionPane(JOptionPane.ERROR_MESSAGE);
+
+                if(!Analyze.doesExist){
+                    JOptionPane.showMessageDialog(main, "Error :: invald branch name", "INPUT ERROR!", 0);
+                }
+                else if(t2 > Analyze.t || t1 < 0 || t2 <= 0 || t1 >= t2){
                     JOptionPane.showMessageDialog(main, "Error :: invald analysis domain", "INPUT ERROR!", 0);
                 }
                 else if(Analyze.err2){
@@ -84,10 +93,21 @@ public class runWindow {
                     main.setVisible(false);
                 }
                 else{
+                    int a = Analyze.Voltage.size()/80;
+                    if(a == 0)
+                        a = 1;
+                    ArrayList<Double> cutVoltage = new ArrayList<>();
+                    ArrayList<Double> cutCurrent = new ArrayList<>();
+                    ArrayList<Double> cutPower = new ArrayList<>();
+                    for(int i = 0; i < Analyze.Voltage.size() ; i += a){
+                        cutVoltage.add(Analyze.Voltage.get(i));
+                        cutCurrent.add(Analyze.Current.get(i));
+                        cutPower.add(Analyze.Power.get(i));
+                    }
                     main.setVisible(false);
-                    chart.openChartVoltage(Analyze.Voltage, t1, t2);
-                    chart.openChartCurrent(Analyze.Current, t1, t2);
-                    chart.openChartPower(Analyze.Power, t1, t2);
+                    chart.openChartVoltage(cutVoltage, t1, t2);
+                    chart.openChartCurrent(cutCurrent, t1, t2);
+                    chart.openChartPower(cutPower, t1, t2);
                 }
             }
         });
