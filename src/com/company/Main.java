@@ -141,7 +141,7 @@ public class Main {
             public void actionPerformed(ActionEvent actionEvent) {
                 String[] fileContainer;
                 String bufferedText = textArea.getText();
-                fileContainer = bufferedText.split("\n");
+                fileContainer = bufferedText.split("\n+");
                 runWindow run = new runWindow();
                 run.open(fileContainer);
             }

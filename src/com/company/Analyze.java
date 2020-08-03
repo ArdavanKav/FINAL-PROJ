@@ -12,13 +12,14 @@ public class Analyze {
     static ArrayList<String> elementsKey = new ArrayList<>();
     static Node[] node = new Node[100];
     static HashMap<String, Branch> elements = new HashMap<>();
-    static ArrayList<Branch> capa = new ArrayList<>();
     static double t = 0;
     static boolean err5 = false;
     static boolean err4 = false;
     static boolean err3 = false;
     static boolean err2 = false;
     static boolean err1 = false;
+    static boolean invalidinput = false;
+    static int errLine;
     static boolean doesExist = false;
 
     public static void main(String[] fileContainer) {
@@ -49,6 +50,10 @@ public class Analyze {
         Pattern dependent_VtoI_Pattern = Pattern.compile("H");
 //========================================================================================================== Main While:
         while (true) {
+            if(fileContainer.length == fileContainerLocation){
+                err1 = true;
+                return;
+            }
             input = fileContainer[fileContainerLocation];
             fileContainerLocation++;
             sp = input.split(" +");
@@ -69,21 +74,24 @@ public class Analyze {
                     if (realValue(sp[1]) > 0)
                         dt = realValue(sp[1]);
                     else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
                         return;
                     }
                 } else if (sp[0].equals("dv")) {
                     if (realValue(sp[1]) > 0)
                         dv = realValue(sp[1]);
                     else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
                         return;
                     }
                 } else if (sp[0].equals("di")) {
                     if (realValue(sp[1]) > 0)
                         di = realValue(sp[1]);
                     else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
                         return;
                     }
                 } else if (sp[0].equals(".tran")) {
@@ -111,8 +119,9 @@ public class Analyze {
                     if (realValue(sp[3]) > 0)
                         value = realValue(sp[3]);
                     else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
-                        break;
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
+                        return;
                     }
                     if (!node[in].doesExist)
                         node[in].doesExist = true;
@@ -121,10 +130,8 @@ public class Analyze {
                     Branch newBranch = new Branch();
                     if (resistorMatcher.find())
                         newBranch = new Branch("R", sp[0], in, out, value);
-                    if (capacitorMatcher.find()){
+                    if (capacitorMatcher.find())
                         newBranch = new Branch("C", sp[0], in, out, value);
-                        capa.add(newBranch);
-                    }
                     if (inductorMatcher.find())
                         newBranch = new Branch("L", sp[0], in, out, value);
                     elements.put(sp[0], newBranch);
@@ -147,8 +154,9 @@ public class Analyze {
                         f = realValue(sp[5]);
                         fi = realValue(sp[6]);
                     } else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
-                        break;
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
+                        return;
                     }
                     Branch source = new Branch("I", sp[0], in, out, I0, A, f, fi);
                     elements.put(sp[0], source);
@@ -171,8 +179,9 @@ public class Analyze {
                         f = realValue(sp[5]);
                         fi = realValue(sp[6]);
                     } else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
-                        break;
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
+                        return;
                     }
                     Branch source = new Branch("V", sp[0], in, out, V0, A, f, fi);
                     elements.put(sp[0], source);
@@ -193,8 +202,9 @@ public class Analyze {
                     if (realValue(sp[5]) != -1000000) {
                         coeff = realValue(sp[5]);
                     } else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
-                        break;
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
+                        return;
                     }
                     Branch DSource = new Branch("G", sp[0], in, out, Integer.parseInt(sp[3]), Integer.parseInt(sp[4]), coeff);
                     elements.put(sp[0], DSource);
@@ -214,8 +224,9 @@ public class Analyze {
                     if (realValue(sp[4]) != -1000000) {
                         coeff = realValue(sp[4]);
                     } else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
-                        break;
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
+                        return;
                     }
                     Branch DSource = new Branch("F", sp[0], in, out, sp[3], coeff);
                     elements.put(sp[0], DSource);
@@ -235,8 +246,9 @@ public class Analyze {
                     if (realValue(sp[5]) != -1000000) {
                         coeff = realValue(sp[5]);
                     } else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
-                        break;
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
+                        return;
                     }
                     Branch DSource = new Branch("E", sp[0], in, out, Integer.parseInt(sp[3]), Integer.parseInt(sp[4]), coeff);
                     elements.put(sp[0], DSource);
@@ -256,8 +268,9 @@ public class Analyze {
                     if (realValue(sp[4]) != -1000000) {
                         coeff = realValue(sp[4]);
                     } else {
-                        System.err.println("invalid input :: line :" + (fileContainerLocation));
-                        break;
+                        invalidinput = true;
+                        errLine = fileContainerLocation;
+                        return;
                     }
                     Branch DSource = new Branch("H", sp[0], in, out, sp[3], coeff);
                     elements.put(sp[0], DSource);
@@ -266,10 +279,15 @@ public class Analyze {
                     node[out].branches.add(DSource);
                     node[in].neighbours.add(out);
                     node[out].neighbours.add(in);
-                } else
-                    System.err.println("invalid input :: line :" + (fileContainerLocation));
+                } else{
+                    invalidinput = true;
+                    errLine = fileContainerLocation;
+                    return;
+                }
             } catch (Exception e) {
-                System.err.println("invalid input :: line :" + (fileContainerLocation));
+                invalidinput = true;
+                errLine = fileContainerLocation;
+                return;
             }
         }
 
