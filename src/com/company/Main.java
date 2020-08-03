@@ -5,64 +5,82 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
         ArrayList<Branch> elements = new ArrayList<>();
-        JFrame mainFrame = new JFrame("KAV_Spice");
+        JFrame mainFrame = new JFrame("PSpice");
         JTextArea textArea = new JTextArea();
         JButton runButton = new JButton("RUN");
         JButton loadButton = new JButton("LOAD");
         JButton drawButton = new JButton("DRAW");
+        JButton saveButton = new JButton("SAVE");
         JPanel panel = new JPanel();
-        Border border = BorderFactory.createLineBorder(Color.red, 2 , false);
+        Border border = BorderFactory.createLineBorder(Color.black, 2 , false);
         runButton.setBorder(border);
         loadButton.setBorder(border);
         drawButton.setBorder(border);
-        textArea.setBackground(Color.lightGray);
-        loadButton.setBackground(Color.lightGray);
-        drawButton.setBackground(Color.lightGray);
-        runButton.setBackground(Color.lightGray);
-        loadButton.setForeground(Color.darkGray);
-        drawButton.setForeground(Color.darkGray);
-        runButton.setForeground(Color.darkGray);
-        textArea.setForeground(Color.darkGray);
+        saveButton.setBorder(border);
+        textArea.setBackground(Color.black);
+        loadButton.setBackground(Color.black);
+        drawButton.setBackground(Color.black);
+        runButton.setBackground(Color.black);
+        saveButton.setBackground(Color.black);
+        loadButton.setForeground(Color.red);
+        drawButton.setForeground(Color.red);
+        runButton.setForeground(Color.red);
+        textArea.setForeground(Color.red);
+        saveButton.setForeground(Color.red);
+        ImageIcon logo = new ImageIcon("src\\pic\\image.png");
+        Image nrv = logo.getImage();
+        Image nnrv = nrv.getScaledInstance(130, 130 , Image.SCALE_SMOOTH);
+        logo = new ImageIcon(nnrv);
+        JLabel logoLabel = new JLabel(logo);
+        logoLabel.setBounds(280,180, 130,130);
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        mainFrame.setSize(380, 440);
-        mainFrame.setLocation(480,200);
+        JLabel textlabel = new JLabel("PSpice");
+        textlabel.setForeground(new Color(170,0,0));
+        textlabel.setFont(new Font("BOLD", Font.BOLD, 45));
+        textlabel.setBounds(270,300,150,100);
+
+        mainFrame.setSize(480, 440);
+        mainFrame.setLocation(500,200);
         mainFrame.setLayout(null);
-        panel.setBorder(BorderFactory.createLineBorder(Color.red , 3 , true));
-        panel.setBackground(Color.black);
+        panel.setBorder(BorderFactory.createLineBorder(Color.BLACK , 6 , true));
+        panel.setBackground(new Color(158,154,44));
         panel.setLayout(null);
-        panel.setBounds(0,0,366,403);
+        panel.setBounds(0,0,466,403);
         mainFrame.add(panel);
 
         JScrollPane scrollPane = new JScrollPane(textArea);
-        textArea.setFont(new Font("BOLD", Font.BOLD, 20));
+        textArea.setFont(new Font("BOLD", Font.BOLD, 16));
         scrollPane.setBorder(border);
-        scrollPane.setBounds(20,10,220,370);
-        loadButton.setBounds(260,50,80,40);
-        runButton.setBounds(260,130,80,40);
-        drawButton.setBounds(260,210,80,40);
+        scrollPane.setBounds(10,10,220,310);
+        loadButton.setBounds(20,340,80,40);
+        runButton.setBounds(255,30,80,40);
+        drawButton.setBounds(365,30,80,40);
+        saveButton.setBounds(140, 340, 80, 40);
 
         panel.add(scrollPane);
         panel.add(loadButton);
         panel.add(runButton);
         panel.add(drawButton);
+        panel.add(saveButton);
+        panel.add(logoLabel);
+        panel.add(textlabel);
 
-        final FileReader[] file = new FileReader[1];
-        final String[] thisline = new String[1];
+        final File[] file = {new File("input.txt")};
         try {
-            file[0] = new FileReader("input.txt");
-            BufferedReader reader = new BufferedReader(file[0]);
-            while ((thisline[0] = reader.readLine()) != null)
-                textArea.append(thisline[0] +"\n");
+            BufferedReader fileB = new BufferedReader(new FileReader(file[0]));
+            String s;
+            while((s = fileB.readLine()) != null)
+                textArea.append(s + "\n");
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -73,13 +91,13 @@ public class Main {
                 JFileChooser fileChooser = new JFileChooser("C:\\Users\\Ardavan Kav\\Desktop");
                 fileChooser.showSaveDialog(null);
                 if(fileChooser.getSelectedFile() != null){
-                    String s = fileChooser.getName(fileChooser.getSelectedFile());
+                    file[0] = fileChooser.getSelectedFile();
+                    textArea.setText("");
                     try {
-                        file[0] = new FileReader(s);
-                        BufferedReader reader = new BufferedReader(file[0]);
-                        textArea.setText("");
-                        while ((thisline[0] = reader.readLine()) != null)
-                            textArea.append(thisline[0] +"\n");
+                        BufferedReader fileB = new BufferedReader(new FileReader(file[0]));
+                        String s;
+                        while((s = fileB.readLine()) != null)
+                            textArea.append(s + "\n");
                     } catch (IOException e) {
                         System.err.println(e.getMessage());
                     }
@@ -111,16 +129,9 @@ public class Main {
 
                 for(String s: Analyze.elementsKey)
                     elements.add(Analyze.elements.get(s));
-
                 //=================================================================================================RUN:
-
-
-
                 Circuit c = new Circuit();
                 c.main(elements);
-
-
-
                 //====================================================================================================
             }
         });
@@ -133,6 +144,22 @@ public class Main {
                 fileContainer = bufferedText.split("\n");
                 runWindow run = new runWindow();
                 run.open(fileContainer);
+            }
+        });
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    BufferedWriter fileW =new BufferedWriter(new FileWriter(file[0]));
+                    String bufferedText = textArea.getText();
+                    fileW.write(bufferedText);
+                    fileW.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 

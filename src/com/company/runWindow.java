@@ -13,15 +13,33 @@ public class runWindow {
     JLabel label1 = new JLabel("Select the branch:");
     JButton button = new JButton("Run");
     JTextField nameField = new JTextField();
-    Border border1 = BorderFactory.createLineBorder(Color.BLUE , 3 , true);
+    Border border1 = BorderFactory.createLineBorder(Color.BLACK , 3 , true);
     JPanel panel = new JPanel();
     JLabel label2 = new JLabel("Select analysis period:");
     JLabel label3 = new JLabel("to");
     JTextField startTime = new JTextField("0");
     JTextField endTime = new JTextField("t");
+
     static String selectedBranch = new String("");
 
    void open(String[] fileContainer){
+
+       nameField.setBackground(Color.BLACK);
+       nameField.setBorder(border1);
+       nameField.setForeground(Color.red);
+
+       startTime.setBackground(Color.BLACK);
+       startTime.setBorder(border1);
+       startTime.setForeground(Color.red);
+
+       endTime.setBackground(Color.BLACK);
+       endTime.setBorder(border1);
+       endTime.setForeground(Color.red);
+
+       button.setBorder(border1);
+       button.setForeground(Color.red);
+       button.setBackground(Color.BLACK);
+
 
         main.pack();
         main.setLocation(550,300);
@@ -29,9 +47,9 @@ public class runWindow {
         main.setLayout(null);
 
         panel.setLayout(null);
-        panel.setBounds(0,0,385,212);
+        panel.setBounds(0,0,386,212);
         panel.setBorder(border1);
-        panel.setBackground(Color.white);
+        panel.setBackground(new Color(158,154,44));
 
         label1.setBounds(40, 40, 130, 20);
         nameField.setBounds(160, 40, 100, 20);

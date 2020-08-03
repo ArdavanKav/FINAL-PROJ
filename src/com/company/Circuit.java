@@ -250,7 +250,6 @@ public class Circuit {
 
     }
     static void lablepic(JFrame f, ImageIcon img, int x, int y, int w, int h) {
-
         JLabel l = new JLabel();
         l.setBounds(x, y, w, h);
         l.setIcon(img);
