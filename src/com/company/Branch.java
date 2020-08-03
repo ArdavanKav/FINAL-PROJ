@@ -63,6 +63,13 @@ public class Branch {
         this.elementName = elementName;
         this.coeff = coeff;
     }
+    int direction(Branch b){
+        int t = b.in - b.out ;
+        if(b.in == 0 || b.out ==0 || (Math.abs(t)== 6))
+            return 1 ; /// vertical
+        else
+            return 0 ;  /// horizental
+    }
 
     void updateBranch(Branch branch, Node[] node, HashMap<String, Branch> element, double time, double dt){
         if(branch.type.equals("R")){

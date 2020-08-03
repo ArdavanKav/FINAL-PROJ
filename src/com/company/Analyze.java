@@ -12,13 +12,14 @@ public class Analyze {
     static ArrayList<String> elementsKey = new ArrayList<>();
     static Node[] node = new Node[100];
     static HashMap<String, Branch> elements = new HashMap<>();
+    static ArrayList<Branch> capa = new ArrayList<>();
     static double t = 0;
     static boolean err5 = false;
     static boolean err4 = false;
     static boolean err3 = false;
     static boolean err2 = false;
+    static boolean err1 = false;
     static boolean doesExist = false;
-
 
     public static void main(String[] fileContainer) {
         String name = runWindow.selectedBranch;
@@ -46,7 +47,6 @@ public class Analyze {
         Pattern dependent_ItoI_Pattern = Pattern.compile("F");
         Pattern dependent_VtoV_Pattern = Pattern.compile("E");
         Pattern dependent_VtoI_Pattern = Pattern.compile("H");
-        Pattern DiodePattern = Pattern.compile("D");
 //========================================================================================================== Main While:
         while (true) {
             input = fileContainer[fileContainerLocation];
@@ -63,7 +63,6 @@ public class Analyze {
             Matcher dependent_ItoI_Matcher = dependent_ItoI_Pattern.matcher(sp[0]);
             Matcher dependent_VtoV_Matcher = dependent_VtoV_Pattern.matcher(sp[0]);
             Matcher dependent_VtoI_Matcher = dependent_VtoI_Pattern.matcher(sp[0]);
-            Matcher DiodeMatcher = DiodePattern.matcher(sp[0]);
             //--------------------------------------------------------------------------
             try {
                 if (sp[0].equals("dt")) {
@@ -88,24 +87,16 @@ public class Analyze {
                         return;
                     }
                 } else if (sp[0].equals(".tran")) {
-                    if (!node[0].doesExist) {
-                        System.err.println("# -4 #");
-                        return;
-                    }
                     if (dt == 0 || dv == 0 || di == 0) {
-                        System.err.println("# -1 #");
+                        err1 = true;
                         return;
                     } else {
                         if (realValue(sp[1]) > 0)
                             t = realValue(sp[1]);
                         else {
-                            System.err.println("invalid input :: line :" + (fileContainerLocation));
+                            err1 = true;
                             return;
                         }
-                    }
-                    if (dt > t) {
-                        System.err.println("Err :: dt is too large !");
-                        return;
                     }
                     break;
                 } else if (CommentMatcher.find())
@@ -130,8 +121,10 @@ public class Analyze {
                     Branch newBranch = new Branch();
                     if (resistorMatcher.find())
                         newBranch = new Branch("R", sp[0], in, out, value);
-                    if (capacitorMatcher.find())
+                    if (capacitorMatcher.find()){
                         newBranch = new Branch("C", sp[0], in, out, value);
+                        capa.add(newBranch);
+                    }
                     if (inductorMatcher.find())
                         newBranch = new Branch("L", sp[0], in, out, value);
                     elements.put(sp[0], newBranch);
@@ -331,10 +324,11 @@ public class Analyze {
                 node[mainNode.num].added = true;
                 node[mainNode.num].V = Vn;
                 sff.add(mainNode.num);
-
+                for (Branch s : innerSource)
+                    s.I = 0;
+                for (Branch s : innerSource)
+                    s.seen = false;
                 for (int i = 0; i < sff.size(); i++) {
-                    for (Branch s : innerSource)
-                        s.seen = false;
                     for (Branch s : innerSource) {
                         if (s.in == sff.get(i) && nodes.contains(node[s.out]) && !sff.contains(s.out)) {
                             sff.add(s.out);
@@ -350,19 +344,21 @@ public class Analyze {
                             error3[0] = true;
                         else if (sff.contains(s.in) && sff.contains(s.out) && node[s.in].V == node[s.out].V - s.V)
                             node[s.in].V = node[s.out].V - s.V;
-                        if (sff.get(i) == s.in && s.seen == false) {
+
+                        if (sff.get(i) == s.in && s.seen == false && s.in != 0) {
                             for (Branch q : node[sff.get(i)].branches) {
-                                if (sff.get(i) == q.out)
+                                if (sff.get(i) == q.out && !q.name.equals(s.name))
                                     s.I += q.I;
-                                else if (sff.get(i) == q.in)
+                                else if (sff.get(i) == q.in && !q.name.equals(s.name))
                                     s.I -= q.I;
                             }
                             s.seen = true;
-                        } else if (sff.get(i) == s.out && s.seen == false) {
+                        } else if (sff.get(i) == s.out && s.seen == false && s.out != 0) {
                             for (Branch q : node[sff.get(i)].branches) {
-                                if (sff.get(i) == q.in)
+
+                                if (sff.get(i) == q.in && !q.name.equals(s.name))
                                     s.I += q.I;
-                                else if (sff.get(i) == q.out)
+                                else if (sff.get(i) == q.out && !q.name.equals(s.name))
                                     s.I -= q.I;
                             }
                             s.seen = true;
@@ -431,6 +427,7 @@ public class Analyze {
             }
             unionCounter++;
         }
+
         for (int i = 0; i < unionCounter; i++)
             union[i].setNeighbours();
 
@@ -441,23 +438,28 @@ public class Analyze {
             }
         }
         union[0].updateUnion(0);
+
         //------------------------------------------------------------------------------------------------------Analyze:
+
         double time = 0;
-        boolean exit;
+
         while(time <= t){
+
+            for(Node s: node)
+                s.V = 0;
+            union[0].updateUnion(0);
+
             for(String key: elementsKey){
-                if(!elements.get(key).type.equals("L"))
+                if(!elements.get(key).type.equals("L") && !elements.get(key).type.equals("V") && !elements.get(key).type.equals("H") && !elements.get(key).type.equals("E"))
                     elements.get(key).I = 0;
                 if(!elements.get(key).type.equals("C"))
                     elements.get(key).V = 0;
                 if(elements.get(key).type.equals("V") || elements.get(key).type.equals("H") || elements.get(key).type.equals("E"))
                     elements.get(key).updateBranch(elements.get(key), node, elements, time, dt);
             }
-            for(Node s: node)
-                s.V = 0;
-            union[0].updateUnion(0);
+
             while (true) {
-                exit = true;
+                boolean exit = true;
                 for (int i = 1; i < unionCounter; i++) {
                     for (String ss : elementsKey) {
                         Branch s = elements.get(ss);
@@ -477,15 +479,16 @@ public class Analyze {
                     }
                     union[i].updateUnion(union[i].mainNode.V - dv);
                 }
-                union[0].updateUnion(0);
+
                 for (int i = 1; i < unionCounter; i++) {
                     union[i].updateUnion(union[i].mainNode.V + ((Math.abs(union[i].I1) - Math.abs(union[i].I2)) / di) * dv);
                     if(union[i].I1 * union[i].I2 >= 0)
                         exit = false;
+                    if(union[i].I1 == union[i].I2)
+                        exit = true;
                     union[i].I1 = 0;
                     union[i].I2 = 0;
                 }
-
                 if(exit)
                     break;
             }
@@ -516,8 +519,25 @@ public class Analyze {
             Power = elements.get(name).Power;
         }
 
+        //=============================================================================================================
+        System.out.println("Nodes V:");
+        for (int i = 1; i <= nodeCounter; i++) {
+            System.out.print("node " + i + " : ");
+            for (double s : node[i].Voltage)
+                System.out.printf("%.3f  ", s);
+            System.out.println("");
+        }
+
+        System.out.println("\nBranches : (V, I, P)");
+        for (String s : elementsKey) {
+            System.out.print(s + " : ");
+            for (int i = 0; i < elements.get(s).Voltage.size(); i++)
+                System.out.printf("(%.3f, %.3f ,%.3f) ", elements.get(s).Voltage.get(i), elements.get(s).Current.get(i), elements.get(s).Power.get(i));
+            System.out.println("");
+        }
     }
-    //=============================================================================================== value transfer method:
+    //==================================================================================================================
+
 
     static double realValue(String str) {
         Pattern pattern1 = Pattern.compile("[pnumkMG]");
@@ -552,7 +572,6 @@ public class Analyze {
         return num * Math.pow(10, pow);
     }
 
-    //-----------------------------------------------------------------------------
 
     static boolean error2(Node node[], HashMap<String, Branch> elements, ArrayList<String> keys, int nodeCounter) {
         ArrayList<Integer> cutSet = new ArrayList<>();
@@ -598,7 +617,6 @@ public class Analyze {
         return true;
     }
 
-    //-----------------------------------------------------------------------------
 
     static boolean error4(Node node[], HashMap<String, Branch> elements, ArrayList<String> keys) {
 
@@ -610,7 +628,6 @@ public class Analyze {
         return true;
     }
 
-    //-----------------------------------------------------------------------------****** emtiazi
 
     static boolean error5(Node node[], HashMap<String, Branch> elements, ArrayList<String> keys, int nodeCounter) {
         ArrayList<Integer> cutSet = new ArrayList<>();

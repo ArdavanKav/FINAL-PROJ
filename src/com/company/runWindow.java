@@ -76,6 +76,14 @@ public class runWindow {
                 else if(t2 > Analyze.t || t1 < 0 || t2 <= 0 || t1 >= t2){
                     JOptionPane.showMessageDialog(main, "Error :: invald analysis domain", "INPUT ERROR!", 0);
                 }
+                //else if(Analyze.invalidinput){
+                //    JOptionPane.showMessageDialog(main, "invalid input :: line: " + Analyze.fileContainerLocation, "ANALYZE ERROR!", 0);
+                //   main.setVisible(false);
+                //}
+                else if(Analyze.err1){
+                    JOptionPane.showMessageDialog(main, "Error # 1 #", "ANALYZE ERROR!", 0);
+                main.setVisible(false);
+                }
                 else if(Analyze.err2){
                     JOptionPane.showMessageDialog(main, "Error # 2 #", "ANALYZE ERROR!", 0);
                     main.setVisible(false);
@@ -93,7 +101,7 @@ public class runWindow {
                     main.setVisible(false);
                 }
                 else{
-                    int a = Analyze.Voltage.size()/80;
+                    int a = (Analyze.Voltage.size()/45);
                     if(a == 0)
                         a = 1;
                     ArrayList<Double> cutVoltage = new ArrayList<>();
