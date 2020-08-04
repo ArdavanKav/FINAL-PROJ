@@ -11,6 +11,7 @@ public class Branch {
     double I = 0;
     double V = 0;
     double p = 0;
+    double Vp = 0;
     int in = 0 ;
     int out = 0 ;
     double value = 0;
@@ -78,6 +79,12 @@ public class Branch {
             this.I = (node[branch.in].V - node[branch.out].V) / branch.value;
             this.p = -V*I;
         }
+        if(branch.type.equals("C")){
+
+            this.V = node[in].V - node[out].V;
+            this.I = branch.I + value*((this.V - Vp)/dt);
+
+        }
         if(branch.type.equals("I")){
             this.V = (node[branch.in].V - node[branch.out].V);
             this.I = branch.I0 + branch.domain*Math.sin((2*Math.PI*branch.freq*time)+branch.fi);
@@ -110,12 +117,12 @@ public class Branch {
     void updateSpecial(Branch branch, Node[] node, double dt){
         if(branch.type.equals("C")){
 
-            double Vp = branch.V;
+            System.out.println(Vp);
             this.V = node[in].V - node[out].V;
-            System.out.println(V+" "+Vp);
 
             this.I = branch.I + value*((this.V - Vp)/dt);
 
+            Vp = this.V;
             this.p = -V*I;
         }
 

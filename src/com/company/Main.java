@@ -169,7 +169,7 @@ public class Main {
                 //=================================================================================================RUN:
 
                 if(show){
-                    CircuitMaker c = new CircuitMaker();
+                    Circuit c = new Circuit();
                     c.main(elements);
                 }
 

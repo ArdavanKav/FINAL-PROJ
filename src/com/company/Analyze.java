@@ -301,19 +301,20 @@ public class Analyze {
             if (node[i].doesExist)
                 nodeCounter++;
         //-----------------------------------------------------------------------------------------------------------Errors:
-        if (!error4(node, elements, elementsKey))
-            err4 = true;
-        if (!error5(node, elements, elementsKey, nodeCounter))
-            err5 = true;
-
         boolean check1 = true;
-
         for(Node s: node){
             if(!s.doesExist)
                 check1 = false;
             if(!check1 && s.doesExist)
                 return;
         }
+
+        if (!error4(node, elements, elementsKey))
+            err4 = true;
+        if (!error5(node, elements, elementsKey, nodeCounter))
+            err5 = true;
+
+
 
         //--------------------------------------------------------------------------------------------------union class:
         class Union {
@@ -395,7 +396,6 @@ public class Analyze {
                 }
             }
         }
-
         //------------------------------------------------------------------------------------------------ create union:
 
         int saf[] = new int[100];
@@ -482,8 +482,7 @@ public class Analyze {
             for(String key: elementsKey){
                 if(!elements.get(key).type.equals("L") && !elements.get(key).type.equals("V") && !elements.get(key).type.equals("H") && !elements.get(key).type.equals("E"))
                     elements.get(key).I = 0;
-                if(!elements.get(key).type.equals("C"))
-                    elements.get(key).V = 0;
+                elements.get(key).V = 0;
                 if(elements.get(key).type.equals("V") || elements.get(key).type.equals("H") || elements.get(key).type.equals("E"))
                     elements.get(key).updateBranch(elements.get(key), node, elements, time, dt);
             }
