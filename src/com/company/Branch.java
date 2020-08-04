@@ -110,15 +110,11 @@ public class Branch {
     void updateSpecial(Branch branch, Node[] node, double dt){
         if(branch.type.equals("C")){
 
-            if(branch.Voltage.size() == 0)
-                this.I = branch.value*(this.V/dt);
-            else
-                this.I = branch.value*((this.V - branch.Voltage.get(branch.Voltage.size()-1))/dt);
+            double Vp = branch.V;
+            this.V = node[in].V - node[out].V;
+            System.out.println(V+" "+Vp);
 
-            if(branch.Voltage.size() != 0)
-                this.V = branch.Voltage.get(branch.Voltage.size()-1) + (branch.I * dt)/branch.value;
-            else
-                this.V = (branch.I * dt)/branch.value;
+            this.I = branch.I + value*((this.V - Vp)/dt);
 
             this.p = -V*I;
         }

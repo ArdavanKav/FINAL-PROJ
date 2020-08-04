@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Main {
 
@@ -108,6 +107,18 @@ public class Main {
         runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+
+                try {
+                    BufferedWriter fileW =new BufferedWriter(new FileWriter(file[0]));
+                    String bufferedText = textArea.getText();
+                    fileW.write(bufferedText);
+                    fileW.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                boolean show = true;
                 String[] fileContainer;
                 String bufferedText = textArea.getText();
                 fileContainer = bufferedText.split("\n");
@@ -117,22 +128,53 @@ public class Main {
                 Analyze.elementsKey.clear();
                 Analyze.elements.clear();
                     runWindow.selectedBranch = "";
-                Analyze.main(fileContainer);
-                if(Analyze.err2)
-                    JOptionPane.showMessageDialog(mainFrame, "Error # 2 #", "ANALYZE ERROR!", 0);
-                else if(Analyze.err3)
-                    JOptionPane.showMessageDialog(mainFrame, "Error # 3 #", "ANALYZE ERROR!", 0);
-                else if(Analyze.err4)
-                    JOptionPane.showMessageDialog(mainFrame, "Error # 4 #", "ANALYZE ERROR!", 0);
-                else if(Analyze.err5)
-                    JOptionPane.showMessageDialog(mainFrame, "Error # 5 #", "ANALYZE ERROR!", 0);
 
+                Analyze.main(fileContainer);
+                if (Analyze.invalidinput) {
+                    JOptionPane.showMessageDialog(mainFrame, "invalid input :: line: " + Analyze.errLine, "ANALYZE ERROR!", 0);
+                    Analyze.invalidinput = false;
+                    show = false;
+                }else if (Analyze.err1) {
+                    JOptionPane.showMessageDialog(mainFrame, "Error # 1 #", "ANALYZE ERROR!", 0);
+                    Analyze.err1 = false;
+                    show = false;
+                }
+                else if(Analyze.err2){
+                    JOptionPane.showMessageDialog(mainFrame, "Error # 2 #", "ANALYZE ERROR!", 0);
+                    Analyze.err2 = false;
+                    show = false;
+                }
+                else if(Analyze.err3){
+                    JOptionPane.showMessageDialog(mainFrame, "Error # 3 #", "ANALYZE ERROR!", 0);
+                    Analyze.err3 = false;
+                    show = false;
+                }
+
+                else if(Analyze.err4){
+                    JOptionPane.showMessageDialog(mainFrame, "Error # 4 #", "ANALYZE ERROR!", 0);
+                    Analyze.err4 = false;
+                    show = false;
+                }
+
+                else if(Analyze.err5){
+                    JOptionPane.showMessageDialog(mainFrame, "Error # 5 #", "ANALYZE ERROR!", 0);
+                    Analyze.err5 = false;
+                    show = false;
+                }
+                elements.clear();
                 for(String s: Analyze.elementsKey)
                     elements.add(Analyze.elements.get(s));
+
+
                 //=================================================================================================RUN:
-                Circuit c = new Circuit();
-                c.main(elements);
+
+                if(show){
+                    CircuitMaker c = new CircuitMaker();
+                    c.main(elements);
+                }
+
                 //====================================================================================================
+
             }
         });
 

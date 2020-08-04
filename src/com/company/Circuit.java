@@ -9,17 +9,17 @@ public class Circuit {
     JFrame circuit = new JFrame("circuit");
     JLabel dl = new JLabel();
 
-    ImageIcon nodeimg = new ImageIcon("src\\pic\\node.png");
-    ImageIcon groundimg = new ImageIcon("src\\pic\\ground.jpg");
 
     void main(ArrayList<Branch> elements){
 
         circuit.setSize(700 , 650);
 
+        ImageIcon nodeimg = new ImageIcon("src\\pic\\node.png");
         Image nie = nodeimg.getImage();
         Image nnimg = nie.getScaledInstance(30, 30 , Image.SCALE_SMOOTH);
         nodeimg = new ImageIcon(nnimg);
 
+        ImageIcon groundimg = new ImageIcon("src\\pic\\ground.jpg");
         Image gid = groundimg.getImage();
         Image ngid = gid.getScaledInstance(30, 30 , Image.SCALE_SMOOTH);
         groundimg = new ImageIcon(ngid);

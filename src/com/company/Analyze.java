@@ -305,6 +305,16 @@ public class Analyze {
             err4 = true;
         if (!error5(node, elements, elementsKey, nodeCounter))
             err5 = true;
+
+        boolean check1 = true;
+
+        for(Node s: node){
+            if(!s.doesExist)
+                check1 = false;
+            if(!check1 && s.doesExist)
+                return;
+        }
+
         //--------------------------------------------------------------------------------------------------union class:
         class Union {
             Node mainNode = new Node();
@@ -385,6 +395,7 @@ public class Analyze {
                 }
             }
         }
+
         //------------------------------------------------------------------------------------------------ create union:
 
         int saf[] = new int[100];
@@ -455,6 +466,7 @@ public class Analyze {
                 union[node[elements.get(s).out].union].neighbours.add(node[elements.get(s).in].union);
             }
         }
+
         union[0].updateUnion(0);
 
         //------------------------------------------------------------------------------------------------------Analyze:
@@ -487,6 +499,7 @@ public class Analyze {
                         if (union[i].nodes.contains(node[s.out]) && !union[i].nodes.contains(node[s.in]))
                             union[i].I1 -= s.I;
                     }
+
                     union[i].updateUnion(union[i].mainNode.V + dv);
                     for (Branch s : union[i].branches) {
                         s.updateBranch(elements.get(s.name), node, elements, time, dt);
@@ -522,7 +535,6 @@ public class Analyze {
                 elements.get(i).Current.add(elements.get(i).I);
                 elements.get(i).Power.add(elements.get(i).p);
             }
-
             if (!error4(node, elements, elementsKey))
                 err4 = true;
             if (!error2(node, elements, elementsKey, nodeCounter))
