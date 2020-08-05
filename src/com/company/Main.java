@@ -74,7 +74,7 @@ public class Main {
         panel.add(logoLabel);
         panel.add(textlabel);
 
-        final File[] file = {new File("input.txt")};
+        final File[] file = {new File("Test\\5.DVS_circuit.txt")};
         try {
             BufferedReader fileB = new BufferedReader(new FileReader(file[0]));
             String s;
@@ -130,6 +130,7 @@ public class Main {
                     runWindow.selectedBranch = "";
 
                 Analyze.main(fileContainer);
+
                 if (Analyze.invalidinput) {
                     JOptionPane.showMessageDialog(mainFrame, "invalid input :: line: " + Analyze.errLine, "ANALYZE ERROR!", 0);
                     Analyze.invalidinput = false;
@@ -161,9 +162,10 @@ public class Main {
                     Analyze.err5 = false;
                     show = false;
                 }
+
                 elements.clear();
                 for(String s: Analyze.elementsKey)
-                    elements.add(Analyze.elements.get(s));
+                    elements.add(Analyze.circuitDraw.get(s));
 
 
                 //=================================================================================================RUN:

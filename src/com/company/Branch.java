@@ -8,6 +8,8 @@ public class Branch {
     boolean seen = false;
     String type;
     String name;
+    double currentN = 0;
+    double currentP = 0;
     double I = 0;
     double V = 0;
     double p = 0;
@@ -73,7 +75,7 @@ public class Branch {
             return 0 ;  /// horizental
     }
 
-    void updateBranch(Branch branch, Node[] node, HashMap<String, Branch> element, double time, double dt){
+    void updateBranch(Branch branch, Node[] node, double dt, double dv){
         if(branch.type.equals("R")){
             this.V = (node[branch.in].V - node[branch.out].V);
             this.I = (node[branch.in].V - node[branch.out].V) / branch.value;
@@ -82,9 +84,30 @@ public class Branch {
         if(branch.type.equals("C")){
 
             this.V = node[in].V - node[out].V;
-            this.I = branch.I + value*((this.V - Vp)/dt);
-
+            this.I = value*((this.V - Vp)/dt);
+            currentP = I + dv / dt;
+            currentN = I - dv / dt;
         }
+    }
+
+    void updateSpecial(Branch branch, Node[] node, double dt){
+        if(branch.type.equals("C")){
+            this.V = node[in].V - node[out].V;
+            Vp = this.V;
+            this.p = -V*I;
+        }
+        if(branch.type.equals("L")){
+            this.V = (node[branch.in].V - node[branch.out].V);
+            if(branch.Current.size() != 0)
+                this.I = branch.Current.get(branch.Current.size()-1) + ((node[branch.in].V - node[branch.out].V)*dt)/branch.value;
+            else
+                this.I = ((node[branch.in].V - node[branch.out].V)*dt)/branch.value;
+            this.p = -V*I;
+        }
+
+    }
+
+    void updateSource(Branch branch, Node[] node, HashMap<String, Branch> element, double time){
         if(branch.type.equals("I")){
             this.V = (node[branch.in].V - node[branch.out].V);
             this.I = branch.I0 + branch.domain*Math.sin((2*Math.PI*branch.freq*time)+branch.fi);
@@ -112,29 +135,6 @@ public class Branch {
             this.V = (element.get(branch.elementName).I)*branch.coeff;
             this.p = V*I;
         }
-    }
-
-    void updateSpecial(Branch branch, Node[] node, double dt){
-        if(branch.type.equals("C")){
-
-            System.out.println(Vp);
-            this.V = node[in].V - node[out].V;
-
-            this.I = branch.I + value*((this.V - Vp)/dt);
-
-            Vp = this.V;
-            this.p = -V*I;
-        }
-
-        if(branch.type.equals("L")){
-            this.V = (node[branch.in].V - node[branch.out].V);
-            if(branch.Current.size() != 0)
-                this.I = branch.Current.get(branch.Current.size()-1) + ((node[branch.in].V - node[branch.out].V)*dt)/branch.value;
-            else
-                this.I = ((node[branch.in].V - node[branch.out].V)*dt)/branch.value;
-            this.p = -V*I;
-        }
-
     }
 
 }

@@ -10,7 +10,7 @@ public class Draw1 extends Canvas {
     static double min = 0;
     static double t1 = 0;
     static double t2 = 0;
-    static int y0 = 0;
+    static int y0 = 180;
 
     Draw1(ArrayList<Double> list, double t1, double t2){
         this.list = list;
@@ -55,10 +55,10 @@ public class Draw1 extends Canvas {
         g.drawLine(365, y0, 365, y0+3);
         g.drawLine(197, y0, 197, y0+3);
         g.drawLine(532, y0, 532, y0+3);
-        g.drawString(String.format("%.2f", (int)(t1/(Analyze.t/list.size())) *(Analyze.t/list.size())), 45, y0+15);
-        g.drawString(String.format("%.2f", (int)(t2/(Analyze.t/list.size())) *(Analyze.t/list.size())), 680, y0+15);
-        g.drawString(String.format("%.2f", max), 5, 20);
-        g.drawString(String.format("%.2f", min), 5, 350);
+        g.drawString(String.format("%.3f", (int)(t1/(Analyze.t/list.size())) *(Analyze.t/list.size())), 45, y0+15);
+        g.drawString(String.format("%.3f", (int)(t2/(Analyze.t/list.size())) *(Analyze.t/list.size())), 680, y0+15);
+        g.drawString(String.format("%.3f", max), 5, 20);
+        g.drawString(String.format("%.3f", min), 5, 350);
         g.setColor(Color.GREEN);
 
         int i1 = (int) (t1* list.size()/Analyze.t)-1;
