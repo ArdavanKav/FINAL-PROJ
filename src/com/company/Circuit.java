@@ -44,15 +44,15 @@ public class Circuit {
             String s = String.valueOf(i);
 
             if(i>=1 && i<=6)
-                lablewrite(circuit,s,70+100*(i-1) , 500 , 20 ,10);
+                lablewrite(circuit,s,70+100*(i-1) , 480 , 20 ,10);
             if(i>=7 && i<=12)
-                lablewrite(circuit,s,70+100*(i-7) , 400 , 20 ,10);
+                lablewrite(circuit,s,70+100*(i-7) , 380 , 20 ,10);
             if(i>=13 && i<=18)
-                lablewrite(circuit,s,70+100*(i-13) , 300 , 20 ,10);
+                lablewrite(circuit,s,70+100*(i-13) , 280 , 20 ,10);
             if(i>=19 && i<=24)
-                lablewrite(circuit,s,70+100*(i-19) , 200 , 20 ,10);
+                lablewrite(circuit,s,70+100*(i-19) , 180 , 20 ,10);
             if(i>=25 && i<=30)
-                lablewrite(circuit,s,70+100*(i-25) , 100 , 20 ,10);
+                lablewrite(circuit,s,70+100*(i-25) , 80 , 20 ,10);
 
 
         }
@@ -203,296 +203,319 @@ public class Circuit {
 
 
         //  Iterator it = Branches.iterator();
-        for (int i = 0 ; i< elements.size() ; i++){   //// main elements
+        for (int i = 0 ; i< elements.size() ; i++) {   //// main elements
 
-
-
-            if(elements.get(i).type.equals("R")){
-                if(elements.get(i).direction(elements.get(i)) == 1)
-                    lablepic(circuit ,rv , x(elements.get(i).in , elements.get(i).out) ,y(elements.get(i).in , elements.get(i).out) + 30 , 10 , 70);
+            int f = 0;
+            for (int j = i - 1; j >= 0; j--) {
+                if (isparalel(elements.get(i), elements.get(j)) == 1)
+                    f = 1;
+            }
+            if (f == 0) {
+                if (elements.get(i).direction(elements.get(i)) == 1)
+                    lablewrite(circuit, elements.get(i).name, x(elements.get(i).in, elements.get(i).out) - 20, y(elements.get(i).in, elements.get(i).out) + 70, 20, 10);
                 else
-                    lablepic(circuit ,rh , x(elements.get(i).in , elements.get(i).out) + 30 ,y(elements.get(i).in , elements.get(i).out)  , 70 , 10);
+                    lablewrite(circuit, elements.get(i).name, x(elements.get(i).in, elements.get(i).out) + 80, y(elements.get(i).in, elements.get(i).out) - 10, 20, 10);
 
-            }
-            if(elements.get(i).type.equals("C")){
-                if(elements.get(i).direction(elements.get(i)) == 1)
-                    lablepic(circuit ,cv , x(elements.get(i).in , elements.get(i).out) ,y(elements.get(i).in , elements.get(i).out) + 30 , 10 , 70);
-                else
-                    lablepic(circuit ,ch , x(elements.get(i).in , elements.get(i).out) + 30 ,y(elements.get(i).in , elements.get(i).out)  , 70 , 10);
 
-            }
-            if(elements.get(i).type.equals("L")){
-                if(elements.get(i).direction(elements.get(i)) == 1)
-                    lablepic(circuit ,lv , x(elements.get(i).in , elements.get(i).out) ,y(elements.get(i).in , elements.get(i).out) + 30 , 10 , 70);
-                else
-                    lablepic(circuit ,lh , x(elements.get(i).in , elements.get(i).out) + 30 ,y(elements.get(i).in , elements.get(i).out)  , 70 , 10);
-
-            }
-            if(elements.get(i).type.equals("I")) {
-                if (elements.get(i).direction(elements.get(i)) == 1) {
-                    if (elements.get(i).in > elements.get(i).out)
-                        lablepic(circuit, csvd, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+                if (elements.get(i).type.equals("R")) {
+                    if (elements.get(i).direction(elements.get(i)) == 1)
+                        lablepic(circuit, rv, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
                     else
-                        lablepic(circuit, csvu, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+                        lablepic(circuit, rh, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+                }
+                if (elements.get(i).type.equals("C")) {
+                    if (elements.get(i).direction(elements.get(i)) == 1)
+                        lablepic(circuit, cv, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+                    else
+                        lablepic(circuit, ch, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
 
                 }
-                else {
-                    if (elements.get(i).in > elements.get(i).out)
-                        lablepic(circuit, cshl, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+                if (elements.get(i).type.equals("L")) {
+                    if (elements.get(i).direction(elements.get(i)) == 1)
+                        lablepic(circuit, lv, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
                     else
-                        lablepic(circuit, cshr, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
-
+                        lablepic(circuit, lh, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
 
                 }
-            }
+                if (elements.get(i).type.equals("I")) {
+                    if (elements.get(i).direction(elements.get(i)) == 1) {
+                        if (elements.get(i).in > elements.get(i).out)
+                            lablepic(circuit, csvd, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, csvu, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
 
-            if(elements.get(i).type.equals("V")) {
-                if (elements.get(i).direction(elements.get(i)) == 1) {
-                    if (elements.get(i).in > elements.get(i).out)
-                        lablepic(circuit, vsvd, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
-                    else
-                        lablepic(circuit, vsvu, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
-
-                }
-                else {
-                    if (elements.get(i).in > elements.get(i).out)
-                        lablepic(circuit, vshl, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
-                    else
-                        lablepic(circuit, vshr, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+                    } else {
+                        if (elements.get(i).in > elements.get(i).out)
+                            lablepic(circuit, cshl, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+                        else
+                            lablepic(circuit, cshr, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
 
 
-                }
-            }
-            if(elements.get(i).type.equals("E") || elements.get(i).type.equals("H")) {
-                if (elements.get(i).direction(elements.get(i)) == 1) {
-                    if (elements.get(i).in > elements.get(i).out)
-                        lablepic(circuit, dvsvd, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
-                    else
-                        lablepic(circuit, dvsvu, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
-
-                }
-                else {
-                    if (elements.get(i).in > elements.get(i).out)
-                        lablepic(circuit, dvshl, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
-                    else
-                        lablepic(circuit, dvshr, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
-
-
+                    }
                 }
 
-            }
-            if(elements.get(i).type.equals("G") || elements.get(i).type.equals("F")) {
-                if (elements.get(i).direction(elements.get(i)) == 1) {
-                    if (elements.get(i).in > elements.get(i).out)
-                        lablepic(circuit, dcsvd, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
-                    else
-                        lablepic(circuit, dcsvu, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+                if (elements.get(i).type.equals("V")) {
+                    if (elements.get(i).direction(elements.get(i)) == 1) {
+                        if (elements.get(i).in > elements.get(i).out)
+                            lablepic(circuit, vsvd, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, vsvu, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+
+                    } else {
+                        if (elements.get(i).in > elements.get(i).out)
+                            lablepic(circuit, vshl, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+                        else
+                            lablepic(circuit, vshr, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+
+
+                    }
+                }
+                if (elements.get(i).type.equals("E") || elements.get(i).type.equals("H")) {
+                    if (elements.get(i).direction(elements.get(i)) == 1) {
+                        if (elements.get(i).in > elements.get(i).out)
+                            lablepic(circuit, dvsvd, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, dvsvu, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+
+                    } else {
+                        if (elements.get(i).in > elements.get(i).out)
+                            lablepic(circuit, dvshl, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+                        else
+                            lablepic(circuit, dvshr, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+
+
+                    }
 
                 }
-                else {
-                    if (elements.get(i).in > elements.get(i).out)
-                        lablepic(circuit, dcshl, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
-                    else
-                        lablepic(circuit, dcshr, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+                if (elements.get(i).type.equals("G") || elements.get(i).type.equals("F")) {
+                    if (elements.get(i).direction(elements.get(i)) == 1) {
+                        if (elements.get(i).in > elements.get(i).out)
+                            lablepic(circuit, dcsvd, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, dcsvu, x(elements.get(i).in, elements.get(i).out), y(elements.get(i).in, elements.get(i).out) + 30, 10, 70);
 
+                    } else {
+                        if (elements.get(i).in > elements.get(i).out)
+                            lablepic(circuit, dcshl, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+                        else
+                            lablepic(circuit, dcshr, x(elements.get(i).in, elements.get(i).out) + 30, y(elements.get(i).in, elements.get(i).out), 70, 10);
+
+
+                    }
 
                 }
-
             }
         }
-        for (int i = 0 ; i< p1.size() ; i++){   //// first paralel elements
+        for (int i = 0 ; i< p1.size() ; i++) {   //// first paralel elements
 
+            int f = 0;
+            for (int j = i - 1; j >= 0; j--) {
+                if (isparalel(p1.get(i), p1.get(j)) == 1)
+                    f = 1;
+            }
 
+            if (f == 0) {
 
-            if(p1.get(i).type.equals("R")){
-                if(p1.get(i).direction(p1.get(i)) == 1)
-                    lablepic(circuit ,rv , x(p1.get(i).in , p1.get(i).out)+10 ,y(p1.get(i).in , p1.get(i).out) + 30 , 10 , 70);
+                if (elements.get(i).direction(elements.get(i)) == 1)
+                    lablewrite(circuit, p1.get(i).name, x(p1.get(i).in, p1.get(i).out) + 35, y(p1.get(i).in, p1.get(i).out) + 55, 20, 10);
                 else
-                    lablepic(circuit ,rh , x(p1.get(i).in , p1.get(i).out) + 30 ,y(p1.get(i).in , p1.get(i).out) +10 , 70 , 10);
+                    lablewrite(circuit, p1.get(i).name, x(p1.get(i).in, p1.get(i).out) + 40, y(p1.get(i).in, p1.get(i).out) + 35, 20, 10);
 
-            }
-            if(p1.get(i).type.equals("C")){
-                if(p1.get(i).direction(p1.get(i)) == 1)
-                    lablepic(circuit ,cv , x(p1.get(i).in , p1.get(i).out)+10 ,y(p1.get(i).in , p1.get(i).out) + 30 , 10 , 70);
-                else
-                    lablepic(circuit ,ch , x(p1.get(i).in , p1.get(i).out) + 30 ,y(p1.get(i).in , p1.get(i).out)+10  , 70 , 10);
 
-            }
-            if(p1.get(i).type.equals("L")){
-                if(p1.get(i).direction(p1.get(i)) == 1)
-                    lablepic(circuit ,lv , x(p1.get(i).in , p1.get(i).out)+10 ,y(p1.get(i).in , p1.get(i).out) + 30 , 10 , 70);
-                else
-                    lablepic(circuit ,lh , x(p1.get(i).in , p1.get(i).out) + 30 ,y(p1.get(i).in , p1.get(i).out)+10 , 70 , 10);
-
-            }
-            if(p1.get(i).type.equals("I")) {
-                if (p1.get(i).direction(p1.get(i)) == 1) {
-                    if (p1.get(i).in > p1.get(i).out)
-                        lablepic(circuit, csvd, x(p1.get(i).in, p1.get(i).out)+10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                if (p1.get(i).type.equals("R")) {
+                    if (p1.get(i).direction(p1.get(i)) == 1)
+                        lablepic(circuit, rv, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
                     else
-                        lablepic(circuit, csvu, x(p1.get(i).in, p1.get(i).out)+10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                        lablepic(circuit, rh, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
 
                 }
-                else {
-                    if (p1.get(i).in > p1.get(i).out)
-                        lablepic(circuit, cshl, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out)+10, 70, 10);
+                if (p1.get(i).type.equals("C")) {
+                    if (p1.get(i).direction(p1.get(i)) == 1)
+                        lablepic(circuit, cv, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
                     else
-                        lablepic(circuit, cshr, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out)+10, 70, 10);
-
+                        lablepic(circuit, ch, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
 
                 }
-            }
-
-            if(p1.get(i).type.equals("V")) {
-                if (p1.get(i).direction(p1.get(i)) == 1) {
-                    if (p1.get(i).in > p1.get(i).out)
-                        lablepic(circuit, vsvd, x(p1.get(i).in, p1.get(i).out)+10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                if (p1.get(i).type.equals("L")) {
+                    if (p1.get(i).direction(p1.get(i)) == 1)
+                        lablepic(circuit, lv, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
                     else
-                        lablepic(circuit, vsvu, x(p1.get(i).in, p1.get(i).out)+10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                        lablepic(circuit, lh, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
 
                 }
-                else {
-                    if (p1.get(i).in > p1.get(i).out)
-                        lablepic(circuit, vshl, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out)+10, 70, 10);
-                    else
-                        lablepic(circuit, vshr, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out)+10, 70, 10);
+                if (p1.get(i).type.equals("I")) {
+                    if (p1.get(i).direction(p1.get(i)) == 1) {
+                        if (p1.get(i).in > p1.get(i).out)
+                            lablepic(circuit, csvd, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, csvu, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+
+                    } else {
+                        if (p1.get(i).in > p1.get(i).out)
+                            lablepic(circuit, cshl, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
+                        else
+                            lablepic(circuit, cshr, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
 
 
-                }
-            }
-            if(p1.get(i).type.equals("E") || p1.get(i).type.equals("H")) {
-                if (p1.get(i).direction(p1.get(i)) == 1) {
-                    if (p1.get(i).in > p1.get(i).out)
-                        lablepic(circuit, dvsvd, x(p1.get(i).in, p1.get(i).out)+10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
-                    else
-                        lablepic(circuit, dvsvu, x(p1.get(i).in, p1.get(i).out)+10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
-
-                }
-                else {
-                    if (p1.get(i).in > p1.get(i).out)
-                        lablepic(circuit, dvshl, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out)+10, 70, 10);
-                    else
-                        lablepic(circuit, dvshr, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out)+10, 70, 10);
-
-
+                    }
                 }
 
-            }
-            if(p1.get(i).type.equals("G") || p1.get(i).type.equals("F")) {
-                if (p1.get(i).direction(p1.get(i)) == 1) {
-                    if (p1.get(i).in > p1.get(i).out)
-                        lablepic(circuit, dcsvd, x(p1.get(i).in, p1.get(i).out)+10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
-                    else
-                        lablepic(circuit, dcsvu, x(p1.get(i).in, p1.get(i).out)+10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                if (p1.get(i).type.equals("V")) {
+                    if (p1.get(i).direction(p1.get(i)) == 1) {
+                        if (p1.get(i).in > p1.get(i).out)
+                            lablepic(circuit, vsvd, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, vsvu, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+
+                    } else {
+                        if (p1.get(i).in > p1.get(i).out)
+                            lablepic(circuit, vshl, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
+                        else
+                            lablepic(circuit, vshr, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
+
+
+                    }
+                }
+                if (p1.get(i).type.equals("E") || p1.get(i).type.equals("H")) {
+                    if (p1.get(i).direction(p1.get(i)) == 1) {
+                        if (p1.get(i).in > p1.get(i).out)
+                            lablepic(circuit, dvsvd, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, dvsvu, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+
+                    } else {
+                        if (p1.get(i).in > p1.get(i).out)
+                            lablepic(circuit, dvshl, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
+                        else
+                            lablepic(circuit, dvshr, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
+
+
+                    }
 
                 }
-                else {
-                    if (p1.get(i).in > p1.get(i).out)
-                        lablepic(circuit, dcshl, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out)+10, 70, 10);
-                    else
-                        lablepic(circuit, dcshr, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out)+10, 70, 10);
+                if (p1.get(i).type.equals("G") || p1.get(i).type.equals("F")) {
+                    if (p1.get(i).direction(p1.get(i)) == 1) {
+                        if (p1.get(i).in > p1.get(i).out)
+                            lablepic(circuit, dcsvd, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, dcsvu, x(p1.get(i).in, p1.get(i).out) + 10, y(p1.get(i).in, p1.get(i).out) + 30, 10, 70);
 
+                    } else {
+                        if (p1.get(i).in > p1.get(i).out)
+                            lablepic(circuit, dcshl, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
+                        else
+                            lablepic(circuit, dcshr, x(p1.get(i).in, p1.get(i).out) + 30, y(p1.get(i).in, p1.get(i).out) + 10, 70, 10);
+
+
+                    }
 
                 }
-
             }
         }
 
-        for (int i = 0 ; i< d2.size() ; i++){   //// second paralel elements
+        for (int i = 0 ; i< d2.size() ; i++) {   //// second paralel elements
 
+            int f = 0;
+            for (int j = i - 1; j >= 0; j--) {
+                if (isparalel(elements.get(i), elements.get(j)) == 1)
+                    f = 1;
+            }
+            if (f == 0) {
 
-
-            if(d2.get(i).type.equals("R")){
-                if(d2.get(i).direction(d2.get(i)) == 1)
-                    lablepic(circuit ,rv , x(d2.get(i).in , d2.get(i).out)+20 ,y(p1.get(i).in , d2.get(i).out) + 30 , 10 , 70);
+                if (elements.get(i).direction(elements.get(i)) == 1)
+                    lablewrite(circuit, d2.get(i).name, x(d2.get(i).in, d2.get(i).out) + 40, y(d2.get(i).in, d2.get(i).out) + 65, 20, 10);
                 else
-                    lablepic(circuit ,rh , x(d2.get(i).in , d2.get(i).out) + 30 ,y(d2.get(i).in , d2.get(i).out) +20 , 70 , 10);
+                    lablewrite(circuit, d2.get(i).name, x(d2.get(i).in, d2.get(i).out) + 50, y(d2.get(i).in, d2.get(i).out) + 45, 20, 10);
 
-            }
-            if(d2.get(i).type.equals("C")){
-                if(d2.get(i).direction(d2.get(i)) == 1)
-                    lablepic(circuit ,cv , x(d2.get(i).in , d2.get(i).out)+20 ,y(d2.get(i).in , d2.get(i).out) + 30 , 10 , 70);
-                else
-                    lablepic(circuit ,ch , x(d2.get(i).in , d2.get(i).out) + 30 ,y(d2.get(i).in , d2.get(i).out)+20  , 70 , 10);
 
-            }
-            if(d2.get(i).type.equals("L")){
-                if(d2.get(i).direction(d2.get(i)) == 1)
-                    lablepic(circuit ,lv , x(d2.get(i).in , d2.get(i).out)+20 ,y(d2.get(i).in , d2.get(i).out) + 30 , 10 , 70);
-                else
-                    lablepic(circuit ,lh , x(d2.get(i).in , d2.get(i).out) + 30 ,y(d2.get(i).in , d2.get(i).out)+20 , 70 , 10);
-
-            }
-            if(d2.get(i).type.equals("I")) {
-                if (d2.get(i).direction(d2.get(i)) == 1) {
-                    if (d2.get(i).in > d2.get(i).out)
-                        lablepic(circuit, csvd, x(d2.get(i).in, d2.get(i).out)+20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                if (d2.get(i).type.equals("R")) {
+                    if (d2.get(i).direction(d2.get(i)) == 1)
+                        lablepic(circuit, rv, x(d2.get(i).in, d2.get(i).out) + 20, y(p1.get(i).in, d2.get(i).out) + 30, 10, 70);
                     else
-                        lablepic(circuit, csvu, x(d2.get(i).in, d2.get(i).out)+20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                        lablepic(circuit, rh, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
 
                 }
-                else {
-                    if (d2.get(i).in > d2.get(i).out)
-                        lablepic(circuit, cshl, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out)+20, 70, 10);
+                if (d2.get(i).type.equals("C")) {
+                    if (d2.get(i).direction(d2.get(i)) == 1)
+                        lablepic(circuit, cv, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
                     else
-                        lablepic(circuit, cshr, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out)+20, 70, 10);
-
+                        lablepic(circuit, ch, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
 
                 }
-            }
-
-            if(d2.get(i).type.equals("V")) {
-                if (d2.get(i).direction(d2.get(i)) == 1) {
-                    if (d2.get(i).in > d2.get(i).out)
-                        lablepic(circuit, vsvd, x(d2.get(i).in, d2.get(i).out)+20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                if (d2.get(i).type.equals("L")) {
+                    if (d2.get(i).direction(d2.get(i)) == 1)
+                        lablepic(circuit, lv, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
                     else
-                        lablepic(circuit, vsvu, x(d2.get(i).in, d2.get(i).out)+20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                        lablepic(circuit, lh, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
 
                 }
-                else {
-                    if (d2.get(i).in > d2.get(i).out)
-                        lablepic(circuit, vshl, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out)+20, 70, 10);
-                    else
-                        lablepic(circuit, vshr, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out)+20, 70, 10);
+                if (d2.get(i).type.equals("I")) {
+                    if (d2.get(i).direction(d2.get(i)) == 1) {
+                        if (d2.get(i).in > d2.get(i).out)
+                            lablepic(circuit, csvd, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, csvu, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+
+                    } else {
+                        if (d2.get(i).in > d2.get(i).out)
+                            lablepic(circuit, cshl, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
+                        else
+                            lablepic(circuit, cshr, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
 
 
-                }
-            }
-            if(d2.get(i).type.equals("E") || d2.get(i).type.equals("H")) {
-                if (d2.get(i).direction(d2.get(i)) == 1) {
-                    if (d2.get(i).in > d2.get(i).out)
-                        lablepic(circuit, dvsvd, x(d2.get(i).in, d2.get(i).out)+20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
-                    else
-                        lablepic(circuit, dvsvu, x(d2.get(i).in, d2.get(i).out)+20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
-
-                }
-                else {
-                    if (d2.get(i).in > d2.get(i).out)
-                        lablepic(circuit, dvshl, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out)+20, 70, 10);
-                    else
-                        lablepic(circuit, dvshr, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out)+20, 70, 10);
-
-
+                    }
                 }
 
-            }
-            if(d2.get(i).type.equals("G") || d2.get(i).type.equals("F")) {
-                if (d2.get(i).direction(d2.get(i)) == 1) {
-                    if (d2.get(i).in > d2.get(i).out)
-                        lablepic(circuit, dcsvd, x(d2.get(i).in, d2.get(i).out)+20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
-                    else
-                        lablepic(circuit, dcsvu, x(d2.get(i).in, d2.get(i).out)+20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                if (d2.get(i).type.equals("V")) {
+                    if (d2.get(i).direction(d2.get(i)) == 1) {
+                        if (d2.get(i).in > d2.get(i).out)
+                            lablepic(circuit, vsvd, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, vsvu, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+
+                    } else {
+                        if (d2.get(i).in > d2.get(i).out)
+                            lablepic(circuit, vshl, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
+                        else
+                            lablepic(circuit, vshr, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
+
+
+                    }
+                }
+                if (d2.get(i).type.equals("E") || d2.get(i).type.equals("H")) {
+                    if (d2.get(i).direction(d2.get(i)) == 1) {
+                        if (d2.get(i).in > d2.get(i).out)
+                            lablepic(circuit, dvsvd, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, dvsvu, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+
+                    } else {
+                        if (d2.get(i).in > d2.get(i).out)
+                            lablepic(circuit, dvshl, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
+                        else
+                            lablepic(circuit, dvshr, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
+
+
+                    }
 
                 }
-                else {
-                    if (d2.get(i).in > d2.get(i).out)
-                        lablepic(circuit, dcshl, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out)+20, 70, 10);
-                    else
-                        lablepic(circuit, dcshr, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out)+20, 70, 10);
+                if (d2.get(i).type.equals("G") || d2.get(i).type.equals("F")) {
+                    if (d2.get(i).direction(d2.get(i)) == 1) {
+                        if (d2.get(i).in > d2.get(i).out)
+                            lablepic(circuit, dcsvd, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
+                        else
+                            lablepic(circuit, dcsvu, x(d2.get(i).in, d2.get(i).out) + 20, y(d2.get(i).in, d2.get(i).out) + 30, 10, 70);
 
+                    } else {
+                        if (d2.get(i).in > d2.get(i).out)
+                            lablepic(circuit, dcshl, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
+                        else
+                            lablepic(circuit, dcshr, x(d2.get(i).in, d2.get(i).out) + 30, y(d2.get(i).in, d2.get(i).out) + 20, 70, 10);
+
+
+                    }
 
                 }
-
             }
         }
 
