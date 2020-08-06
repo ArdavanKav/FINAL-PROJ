@@ -88,6 +88,18 @@ public class Branch {
             currentP = I + dv / dt;
             currentN = I - dv / dt;
         }
+        if(branch.type.equals("I")){
+            this.V = (node[branch.in].V - node[branch.out].V);
+            this.p = -V*I;
+        }
+        if(branch.type.equals("G")){
+            this.V = (node[branch.in].V - node[branch.out].V);
+            this.p = -V*I;
+        }
+        if(branch.type.equals("F")){
+            this.V = (node[branch.in].V - node[branch.out].V);
+            this.p = -V*I;
+        }
     }
 
     void updateSpecial(Branch branch, Node[] node, double dt){

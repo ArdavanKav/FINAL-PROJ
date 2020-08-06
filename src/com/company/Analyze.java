@@ -493,10 +493,12 @@ public class Analyze {
         //------------------------------------------------------------------------------------------------------Analyze:
 
         double time = 0;
+        int iii=0;
 
         while(time <= t){
 
-            System.out.println("=========================================="+time);
+            iii++;
+            System.out.println("=========================================="+iii);
 
             for(Node s: node)
                 s.V = 0;
@@ -548,9 +550,6 @@ public class Analyze {
 
             for(String s: elementsKey)
                 elements.get(s).updateSpecial(elements.get(s), node, dt);
-            for(String key: elementsKey)
-                elements.get(key).updateSource(elements.get(key), node, elements, time);
-
 
             for (int i = 0; i <= nodeCounter; i++)
                 node[i].Voltage.add(node[i].V);
@@ -560,6 +559,11 @@ public class Analyze {
                 elements.get(i).Current.add(elements.get(i).I);
                 elements.get(i).Power.add(elements.get(i).p);
             }
+
+
+            for(String key: elementsKey)
+                elements.get(key).updateSource(elements.get(key), node, elements, time);
+
             if (!error4(node, elements, elementsKey))
                 err4 = true;
             if (!error2(node, elements, elementsKey, nodeCounter))
