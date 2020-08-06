@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Analyze {
+public class mmad {
 
     static ArrayList<Double> Voltage = new ArrayList<>();
     static ArrayList<Double> Current = new ArrayList<>();
@@ -12,7 +12,6 @@ public class Analyze {
     static ArrayList<String> elementsKey = new ArrayList<>();
     static Node[] node = new Node[100];
     static HashMap<String, Branch> elements = new HashMap<>();
-    static HashMap<String, Branch> circuitDraw = new HashMap<>();
     static double t = 0;
     static boolean err5 = false;
     static boolean err4 = false;
@@ -292,35 +291,6 @@ public class Analyze {
             }
         }
 
-        circuitDraw = (HashMap<String, Branch>) elements.clone();
-
-        int nodeC = 0;
-        for(Node s: node){
-            if(s.doesExist){
-                clone(node[nodeC],s);
-                for(String ss: elementsKey){
-                    if(elements.get(ss).in == s.num)
-                        elements.get(ss).in = nodeC;
-                    if(elements.get(ss).out == s.num)
-                        elements.get(ss).out = nodeC;
-                }
-                if(nodeC != s.num){
-                    s.branches.clear();
-                    s.neighbours.clear();
-                }
-                nodeC++;
-            }
-        }
-
-        for(Node s: node){
-            for(Node ss: node){
-                if(s.neighbours.contains(ss.numP) && ss.doesExist){
-                    s.neighbours.removeAll(Collections.singleton(ss.numP));
-                    s.neighbours.add(ss.num);
-                }
-            }
-        }
-
         if(elementsKey.contains(name))
             doesExist = true;
         else if(!name.equals(""))
@@ -328,14 +298,21 @@ public class Analyze {
 
         int nodeCounter = 0;
         for (int i = 1; i < 100; i++)
-            if (node[i].doesExist)
+            if (node[i].doesExist){
                 nodeCounter++;
+            }
+
         //-----------------------------------------------------------------------------------------------------------Errors:
 
-        if (!error4(node, elements, elementsKey))
+        if (!error4(node, elements, elementsKey)){
             err4 = true;
-        if (!error5(node, elements, elementsKey, nodeCounter))
+            return;
+        }
+        if (!error5(node, elements, elementsKey, nodeCounter)){
             err5 = true;
+            return;
+        }
+
 
         //--------------------------------------------------------------------------------------------------union class:
         class Union {
@@ -493,18 +470,16 @@ public class Analyze {
         //------------------------------------------------------------------------------------------------------Analyze:
 
         double time = 0;
+        int iii=0;
 
         while(time <= t){
-
-            System.out.println("=========================================="+time);
 
             for(Node s: node)
                 s.V = 0;
             union[0].updateUnion(0);
 
-
             for(String key: elementsKey){
-                if(!elements.get(key).type.equals("L") && !elements.get(key).type.equals("I") && !elements.get(key).type.equals("G") && !elements.get(key).type.equals("F") && !elements.get(key).type.equals("V") && !elements.get(key).type.equals("H") && !elements.get(key).type.equals("E"))
+                if(!elements.get(key).type.equals("L") && !elements.get(key).type.equals("I") && !elements.get(key).type.equals("G") && !elements.get(key).type.equals("F"))
                     elements.get(key).I = 0;
                 if(!elements.get(key).type.equals("V") && !elements.get(key).type.equals("E") && !elements.get(key).type.equals("H"))
                     elements.get(key).V = 0;
@@ -524,11 +499,17 @@ public class Analyze {
 
                     union[i].updateUnion(union[i].mainNode.V + dv);
                     for (Branch s : union[i].branches) {
-                        s.updateBranch(elements.get(s.name), node,  dt,dv);
-                        if (union[i].nodes.contains(node[s.in]) && !union[i].nodes.contains(node[s.out]))
+                        s.updateBranch(elements.get(s.name), node, dt, dv);
+                        if (union[i].nodes.contains(node[s.in]) && !union[i].nodes.contains(node[s.out]) && !s.type.equals("C"))
                             union[i].I2 += s.I;
-                        if (union[i].nodes.contains(node[s.out]) && !union[i].nodes.contains(node[s.in]))
+                        if (union[i].nodes.contains(node[s.out]) && !union[i].nodes.contains(node[s.in]) && !s.type.equals("C"))
                             union[i].I2 -= s.I;
+                        if(s.type.equals("C")){
+                            if(union[i].nodes.contains(node[s.in]) && !union[i].nodes.contains(node[s.out]))
+                                union[i].I2 += s.currentP;
+                            if(union[i].nodes.contains(node[s.out]) && !union[i].nodes.contains(node[s.in]))
+                                union[i].I2 -= s.currentN;
+                        }
                     }
                     union[i].updateUnion(union[i].mainNode.V - dv);
                 }
@@ -537,7 +518,7 @@ public class Analyze {
                     union[i].updateUnion(union[i].mainNode.V + ((Math.abs(union[i].I1) - Math.abs(union[i].I2)) / di) * dv);
                     if(union[i].I1 * union[i].I2 >= 0)
                         exit = false;
-                    if(union[i].I1 == union[i].I2)
+                    if(union[i].I1 == union[i].I2 || Math.abs(union[i].I1) <= 0.001 || Math.abs(union[i].I2) <= 0.001)
                         exit = true;
                     union[i].I1 = 0;
                     union[i].I2 = 0;
@@ -546,16 +527,17 @@ public class Analyze {
                     break;
             }
 
+
             for(String s: elementsKey)
                 elements.get(s).updateSpecial(elements.get(s), node, dt);
             for(String key: elementsKey)
                 elements.get(key).updateSource(elements.get(key), node, elements, time);
 
-
             for (int i = 0; i <= nodeCounter; i++)
                 node[i].Voltage.add(node[i].V);
             for (String i : elementsKey) {
-                elements.get(i).updateBranch(elements.get(i), node, dt, dv);
+                if(!elements.get(i).type.equals("C"))
+                    elements.get(i).updateBranch(elements.get(i), node, dt, dv);
                 elements.get(i).Voltage.add(elements.get(i).V);
                 elements.get(i).Current.add(elements.get(i).I);
                 elements.get(i).Power.add(elements.get(i).p);
@@ -574,22 +556,6 @@ public class Analyze {
             Power = elements.get(name).Power;
         }
 
-        //=============================================================================================================
-        System.out.println("Nodes V:");
-        for (int i = 1; i <= nodeCounter; i++) {
-            System.out.print("node " + i + " : ");
-            for (double s : node[i].Voltage)
-                System.out.printf("%.3f  ", s);
-            System.out.println("");
-        }
-
-        System.out.println("\nBranches : (V, I, P)");
-        for (String s : elementsKey) {
-            System.out.print(s + " : ");
-            for (int i = 0; i < elements.get(s).Voltage.size(); i++)
-                System.out.printf("(%.3f, %.3f ,%.3f) ", elements.get(s).Voltage.get(i), elements.get(s).Current.get(i), elements.get(s).Power.get(i));
-            System.out.println("");
-        }
     }
     //==================================================================================================================
 
@@ -729,21 +695,16 @@ public class Analyze {
                     }
                 }
             }
-            if (cutSet.size() != nodeCounter + 1)
+            if (cutSet.size() != nodeCounter + 1){
+                System.out.println(nodeCounter+1 +" "+ cutSet.size()+" "+key);
                 return false;
+            }
+
         }
         for (int i = 0; i <= nodeCounter; i++)
             node[i].added = false;
 
         return true;
-    }
-
-    static void clone(Node a, Node b){
-        a.numP = b.num;
-        b.doesExist = false;
-        a.doesExist = true;
-        a.branches = (ArrayList<Branch>) b.branches.clone();
-        a.neighbours = (ArrayList<Integer>) b.neighbours.clone();
     }
 
 }
